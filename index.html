@@ -14,6 +14,58 @@
           console.warn('Blocked attempt to overwrite window.fetch');
         }
       });
+
+      window.addEventListener('error', (event) => {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.position = 'fixed';
+        errorDiv.style.top = '0';
+        errorDiv.style.left = '0';
+        errorDiv.style.width = '100vw';
+        errorDiv.style.height = '100vh';
+        errorDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.95)';
+        errorDiv.style.color = 'white';
+        errorDiv.style.zIndex = '999999';
+        errorDiv.style.padding = '40px';
+        errorDiv.style.fontSize = '18px';
+        errorDiv.style.fontFamily = 'monospace';
+        errorDiv.style.whiteSpace = 'pre-wrap';
+        errorDiv.style.overflow = 'auto';
+        
+        let stack = '';
+        if (event.error && event.error.stack) {
+          stack = event.error.stack;
+        } else {
+          stack = event.message + ' at ' + event.filename + ':' + event.lineno;
+        }
+        
+        errorDiv.innerHTML = `<h1>APP CRASHED!</h1><p>Please copy ALL of this text including the stack trace and paste it to the AI assistant:</p><div style="background:#000;padding:20px;margin-top:20px;border-radius:10px;">GLOBAL ERROR:<br>${stack}</div>`;
+        document.body.appendChild(errorDiv);
+      });
+
+      window.addEventListener('unhandledrejection', (event) => {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.position = 'fixed';
+        errorDiv.style.top = '0';
+        errorDiv.style.left = '0';
+        errorDiv.style.width = '100vw';
+        errorDiv.style.height = '100vh';
+        errorDiv.style.backgroundColor = 'rgba(200, 0, 0, 0.95)';
+        errorDiv.style.color = 'white';
+        errorDiv.style.zIndex = '999999';
+        errorDiv.style.padding = '40px';
+        errorDiv.style.fontSize = '18px';
+        errorDiv.style.fontFamily = 'monospace';
+        errorDiv.style.whiteSpace = 'pre-wrap';
+        errorDiv.style.overflow = 'auto';
+        
+        let stack = '';
+        if (event.reason) {
+          stack = event.reason.stack ? event.reason.stack : String(event.reason);
+        }
+        
+        errorDiv.innerHTML = `<h1>UNHANDLED PROMISE REJECTION!</h1><p>Please copy ALL of this text including the stack trace and paste it to the AI assistant:</p><div style="background:#000;padding:20px;margin-top:20px;border-radius:10px;">${stack}</div>`;
+        document.body.appendChild(errorDiv);
+      });
     </script>
   </head>
   <body>

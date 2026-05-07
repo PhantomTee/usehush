@@ -48,7 +48,7 @@ export const Dashboard = () => {
         })
         .rpc();
 
-      addLog(`[SUCCESS] Employee Onboarded: ${tx.slice(0, 8)}...`);
+      addLog(`[SUCCESS] Employee Onboarded: ${String(tx || '').slice(0, 8)}...`);
     } catch(e: any) {
       console.error(e);
       addLog(`[ERROR] ${e.message}`);
@@ -145,7 +145,7 @@ export const Dashboard = () => {
         })
         .rpc();
 
-      addLog(`[SUCCESS] Payroll Processed! Tx: ${tx.slice(0, 8)}...`);
+      addLog(`[SUCCESS] Payroll Processed! Tx: ${String(tx || '').slice(0, 8)}...`);
     } catch(e: any) {
       console.error(e);
       addLog(`[ERROR] ${e.message}`);
