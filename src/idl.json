@@ -1,0 +1,86 @@
+{
+  "version": "0.1.0",
+  "name": "hushhush_pay",
+  "address": "5NKPWTom5xmn9f45ryyyuid6KaQRnQFba7AyY7RCWXFL",
+  "metadata": {
+    "name": "hushhush_pay",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Arcium & Anchor"
+  },
+  "instructions": [
+    {
+      "name": "queue_payroll",
+      "discriminator": [135, 198, 147, 247, 197, 106, 131, 254],
+      "accounts": [
+        {"name": "employer", "writable": true, "signer": true},
+        {"name": "sign_pda_account", "writable": true, "pda": {"seeds": [{"kind": "const", "value": [115, 105, 103, 110, 95, 112, 100, 97]}]}},
+        {"name": "mxe_account"},
+        {"name": "mempool_account", "writable": true},
+        {"name": "executing_pool", "writable": true},
+        {"name": "computation_account", "writable": true},
+        {"name": "comp_def_account"},
+        {"name": "cluster_account", "writable": true},
+        {"name": "pool_account", "writable": true, "address": "G2sRWJvi3xoyh5k2gY49eG9L8YhAEWQPtNb1zb1GXTtC"},
+        {"name": "clock_account", "writable": true, "address": "7EbMUTLo5DjdzbN7s8BXeZwXzEwNQb1hScfRvWg8a6ot"},
+        {"name": "arcium_program", "address": "Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ"},
+        {"name": "system_program", "address": "11111111111111111111111111111111"},
+        {"name": "payroll_master", "writable": true},
+        {"name": "vault", "writable": true},
+        {"name": "employer_token_account", "writable": true},
+        {"name": "vault_authority"},
+        {"name": "token_program", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"},
+        {"name": "payroll_batch", "writable": true}
+      ],
+      "args": [
+        {"name": "computation_offset", "type": "u64"},
+        {"name": "run_id", "type": "u64"},
+        {"name": "max_escrow_amount", "type": "u64"},
+        {"name": "tax_rate_bps", "type": "u64"},
+        {"name": "encrypted_salaries", "type": {"vec": {"defined": {"name": "EncryptedInput"}}}},
+        {"name": "priority_fee", "type": "u64"}
+      ]
+    },
+    {
+      "name": "initialize_organization",
+      "discriminator": [21, 20, 253, 138, 250, 160, 119, 87],
+      "accounts": [
+        {"name": "employer", "writable": true, "signer": true},
+        {"name": "payroll_master", "writable": true, "pda": {"seeds": [{"kind": "const", "value": [112, 97, 121, 114, 111, 108, 108, 95, 109, 97, 115, 116, 101, 114]}, {"kind": "account", "path": "employer"}, {"kind": "arg", "path": "org_id"}]}},
+        {"name": "vault_authority", "pda": {"seeds": [{"kind": "const", "value": [118, 97, 117, 108, 116, 95, 97, 117, 116, 104]}, {"kind": "account", "path": "payroll_master"}]}},
+        {"name": "usdc_mint"},
+        {"name": "vault", "writable": true, "pda": {"seeds": [{"kind": "const", "value": [118, 97, 117, 108, 116]}, {"kind": "account", "path": "payroll_master"}]}},
+        {"name": "token_program", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"},
+        {"name": "associated_token_program", "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"},
+        {"name": "system_program", "address": "11111111111111111111111111111111"},
+        {"name": "rent", "address": "SysvarRent111111111111111111111111111111111"}
+      ],
+      "args": [
+        {"name": "org_id", "type": {"array": ["u8", 16]}},
+        {"name": "mxe_address", "type": "pubkey"},
+        {"name": "cluster_id", "type": {"array": ["u8", 32]}}
+      ]
+    },
+    {
+      "name": "onboard_employee",
+      "discriminator": [145, 78, 145, 25, 123, 34, 35, 243],
+      "accounts": [
+        {"name": "employer", "writable": true, "signer": true, "relations": ["payroll_master"]},
+        {"name": "payroll_master", "writable": true},
+        {"name": "employee_account", "writable": true, "pda": {"seeds": [{"kind": "const", "value": [101, 109, 112, 108, 111, 121, 101, 101]}, {"kind": "account", "path": "payroll_master"}, {"kind": "arg", "path": "employee_wallet"}]}},
+        {"name": "system_program", "address": "11111111111111111111111111111111"}
+      ],
+      "args": [
+        {"name": "employee_wallet", "type": "pubkey"},
+        {"name": "arcis_pubkey", "type": {"array": ["u8", 32]}},
+        {"name": "display_name_hash", "type": {"array": ["u8", 32]}}
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "EncryptedInput",
+      "type": {"kind": "struct", "fields": [{"name": "employee_pda", "type": "pubkey"}, {"name": "ciphertext", "type": {"array": ["u8", 96]}}]}
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "HushHush Pay",
+  "description": "Real-time encrypted payroll on Solana using Arcium SDK.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
