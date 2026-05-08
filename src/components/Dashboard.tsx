@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHushHushPay } from '../hooks/useHushHushPay';
 import { PublicKey, SystemProgram } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
 import { ArciumEncryptionService } from '../services/arcium';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { TOKEN_PROGRAM_ID, getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { toast } from 'sonner';
 
 export const Dashboard = () => {
@@ -14,6 +14,22 @@ export const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
   const [ciphertextDisplay, setCiphertextDisplay] = useState('A7 FF 12 C9 4B ...');
+
+  useEffect(() => {
+    if (!program || !wallet) return;
+    const orgId = new Uint8Array(16);
+    const [payrollMaster] = PublicKey.findProgramAddressSync(
+      [Buffer.from("payroll_master"), wallet.publicKey.toBuffer(), orgId],
+      program.programId
+    );
+    program.provider.connection.getAccountInfo(payrollMaster).then((info) => {
+      if (!info) {
+        console.warn("Payroll Master fetch failed, likely not initialized");
+        localStorage.removeItem('hushhush_onboarded');
+        window.location.reload();
+      }
+    }).catch(console.error);
+  }, [program, wallet]);
 
   const addLog = (msg: string) => {
     setLogs(prev => [...prev, msg]);
@@ -39,6 +55,19 @@ export const Dashboard = () => {
         program.programId
       );
 
+      // Check if employee already exists to prevent '0x0' (Account already initialized) error
+      try {
+        const accInfo = await program.provider.connection.getAccountInfo(employeeAccount);
+        if (accInfo) {
+          addLog("[INFO] Employee already onboarded.");
+          toast.success('Employee already onboarded!');
+          setLoading(false);
+          return;
+        }
+      } catch (e) {
+        // Ignore fetch errors
+      }
+
       const arcisPubkey = new Uint8Array(32);
       const displayNameHash = new Uint8Array(32);
 
@@ -46,9 +75,9 @@ export const Dashboard = () => {
         .onboardEmployee(empPubkey, Array.from(arcisPubkey), Array.from(displayNameHash))
         .accounts({
           employer: wallet.publicKey,
-          payroll_master: payrollMaster,
-          employee_account: employeeAccount,
-          system_program: SystemProgram.programId,
+          payrollMaster: payrollMaster,
+          employeeAccount: employeeAccount,
+          systemProgram: SystemProgram.programId,
         })
         .rpc();
 
@@ -56,8 +85,16 @@ export const Dashboard = () => {
       toast.success('Employee onboarded successfully!');
     } catch(e: any) {
       console.error(e);
-      addLog(`[ERROR] ${e.message}`);
-      toast.error(e.message);
+      let errMsg = e.message;
+      if (e && typeof e.getLogs === 'function') {
+        const logs = e.getLogs();
+        console.error("Simulation logs:", logs);
+        if (logs && logs.length > 0) {
+          errMsg += " | Logs: " + logs.join(' | ');
+        }
+      }
+      addLog(`[ERROR] ${errMsg}`);
+      toast.error(errMsg);
     } finally {
       setLoading(false);
     }
@@ -75,7 +112,7 @@ export const Dashboard = () => {
       addLog("> Local Keypair generated.");
       addLog("> Fetching MXE Public Key...");
 
-      await arciumSvc.initialize(program.provider as anchor.AnchorProvider);
+      await arciumSvc.initialize(program.provider as anchor.AnchorProvider, program.programId);
       addLog("[ARCIUM] Handshake 200 OK");
       addLog("> SharedSecret derived.");
       addLog("> Ready for encryptPayroll().");
@@ -106,12 +143,28 @@ export const Dashboard = () => {
       const computationOffset = new anchor.BN(1);
 
       const ARCIUM_PROGRAM = new PublicKey('Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ');
-      const mxeAccount = anchor.web3.Keypair.generate().publicKey;
-      const mempoolAccount = anchor.web3.Keypair.generate().publicKey;
-      const executingPool = anchor.web3.Keypair.generate().publicKey;
-      const computationAccount = anchor.web3.Keypair.generate().publicKey;
-      const compDefAccount = anchor.web3.Keypair.generate().publicKey;
-      const clusterAccount = anchor.web3.Keypair.generate().publicKey;
+      // Derive Arcium network execution accounts based on cluster offset 456
+      const ARCIUM_CLUSTER_OFFSET = 456;
+      
+      const {
+        getMempoolAccAddress,
+        getExecutingPoolAccAddress,
+        getComputationAccAddress,
+        getClusterAccAddress,
+        getMXEAccAddress,
+        getCompDefAccAddress,
+      } = await import('@arcium-hq/client');
+
+      const mxeAccount = getMXEAccAddress(ARCIUM_PROGRAM);
+      const mempoolAccount = getMempoolAccAddress(ARCIUM_CLUSTER_OFFSET);
+      const executingPool = getExecutingPoolAccAddress(ARCIUM_CLUSTER_OFFSET);
+      
+      // Calculate compDefAccount based on compDefOffset. Assume 0 if not provided or handle it.
+      const compDefAccount = getCompDefAccAddress(ARCIUM_PROGRAM, 0); // Need to use 0 or fetch properly
+      const computationAccount = getComputationAccAddress(ARCIUM_CLUSTER_OFFSET, computationOffset);
+      const clusterAccount = getClusterAccAddress(ARCIUM_CLUSTER_OFFSET);
+      
+      const batchKeypair = anchor.web3.Keypair.generate();
       
       const [signPdaAccount] = PublicKey.findProgramAddressSync(
         [Buffer.from("sign_pda")],
@@ -123,7 +176,18 @@ export const Dashboard = () => {
         program.programId
       );
 
-      const tx = await program.methods
+      const [vaultAuthority] = PublicKey.findProgramAddressSync(
+        [Buffer.from("vault_auth"), payrollMaster.toBuffer()],
+        program.programId
+      );
+      
+      const usdcMint = new PublicKey('4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU');
+      const employerTokenAccount = getAssociatedTokenAddressSync(usdcMint, wallet.publicKey);
+
+      // Check if ATA exists
+      const tokenAccInfo = await program.provider.connection.getAccountInfo(employerTokenAccount);
+      
+      const txBuilder = program.methods
         .queuePayroll(
           computationOffset,
           runId,
@@ -134,32 +198,55 @@ export const Dashboard = () => {
         )
         .accounts({
           employer: wallet.publicKey,
-          sign_pda_account: signPdaAccount,
-          mxe_account: mxeAccount,
-          mempool_account: mempoolAccount,
-          executing_pool: executingPool,
-          computation_account: computationAccount,
-          comp_def_account: compDefAccount,
-          cluster_account: clusterAccount,
-          pool_account: new PublicKey('G2sRWJvi3xoyh5k2gY49eG9L8YhAEWQPtNb1zb1GXTtC'),
-          clock_account: new PublicKey('7EbMUTLo5DjdzbN7s8BXeZwXzEwNQb1hScfRvWg8a6ot'),
-          arcium_program: ARCIUM_PROGRAM,
-          system_program: SystemProgram.programId,
-          payroll_master: payrollMaster,
+          signPdaAccount: signPdaAccount,
+          mxeAccount: mxeAccount,
+          mempoolAccount: mempoolAccount,
+          executingPool: executingPool,
+          computationAccount: computationAccount,
+          compDefAccount: compDefAccount,
+          clusterAccount: clusterAccount,
+          poolAccount: new PublicKey('G2sRWJvi3xoyh5k2gY49eG9L8YhAEWQPtNb1zb1GXTtC'),
+          clockAccount: new PublicKey('7EbMUTLo5DjdzbN7s8BXeZwXzEwNQb1hScfRvWg8a6ot'),
+          arciumProgram: ARCIUM_PROGRAM,
+          systemProgram: SystemProgram.programId,
+          payrollMaster: payrollMaster,
           vault: vault,
-          employer_token_account: anchor.web3.Keypair.generate().publicKey,
-          vault_authority: anchor.web3.Keypair.generate().publicKey,
-          token_program: TOKEN_PROGRAM_ID,
-          payroll_batch: anchor.web3.Keypair.generate().publicKey,
+          employerTokenAccount: employerTokenAccount,
+          vaultAuthority: vaultAuthority,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          payrollBatch: batchKeypair.publicKey,
         })
-        .rpc();
+        .signers([batchKeypair]);
+
+      // If ATA doesn't exist, bundle creation in pre-instructions
+      if (!tokenAccInfo) {
+        const { createAssociatedTokenAccountInstruction } = await import('@solana/spl-token');
+        txBuilder.preInstructions([
+          createAssociatedTokenAccountInstruction(
+            wallet.publicKey, // payer
+            employerTokenAccount, // ata
+            wallet.publicKey, // owner
+            usdcMint // mint
+          )
+        ]);
+      }
+
+      const tx = await txBuilder.rpc();
 
       addLog(`[SUCCESS] Payroll Processed! Tx: ${String(tx || '').slice(0, 8)}...`);
       toast.success('Payroll processed successfully!');
     } catch(e: any) {
       console.error(e);
-      addLog(`[ERROR] ${e.message}`);
-      toast.error(e.message);
+      let errMsg = e.message;
+      if (e && typeof e.getLogs === 'function') {
+        const logs = e.getLogs();
+        console.error("Simulation logs:", logs);
+        if (logs && logs.length > 0) {
+          errMsg += " | Logs: " + logs.join(' | ');
+        }
+      }
+      addLog(`[ERROR] ${errMsg}`);
+      toast.error(errMsg);
     } finally {
       setLoading(false);
     }

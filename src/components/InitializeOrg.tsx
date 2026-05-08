@@ -21,9 +21,12 @@ export const InitializeOrg = ({ onComplete }: { onComplete?: () => void }) => {
       console.log(`Init comp def logic using URL: ${circuitUrl}`);
       
       const orgId = new Uint8Array(16);
-      crypto.getRandomValues(orgId);
+      // Removed crypto.getRandomValues(orgId) to match Dashboard.tsx deterministic orgId
 
-      const mxeAddress = anchor.web3.Keypair.generate().publicKey;
+      const ARCIUM_PROGRAM = new PublicKey('Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ');
+      const { getMXEAccAddress } = await import('@arcium-hq/client');
+      const mxeAddress = getMXEAccAddress(ARCIUM_PROGRAM);
+      
       const clusterIdBytes = new Uint8Array(32); 
       crypto.getRandomValues(clusterIdBytes);
 

@@ -23,10 +23,17 @@ export class ArciumEncryptionService {
   }
 
   async initialize(provider: anchor.AnchorProvider, programId: PublicKey = arciumProgramId) {
+    // Immediate Fix as requested
+    if (typeof window !== 'undefined') {
+      (window as any).process = (window as any).process || { env: {} };
+      (window as any).process.env = (window as any).process.env || {};
+    }
+    process.env.ARCIUM_CLUSTER_OFFSET = "456";
+    
     const mxePubKey = await getMXEPublicKey(provider, programId);
     if (!mxePubKey) throw new Error("Could not fetch MXE Public Key");
-    
     this.mxePublicKey = mxePubKey;
+    
     this.sharedSecret = nacl.box.before(this.mxePublicKey, this.localKeypair.secretKey);
   }
 
