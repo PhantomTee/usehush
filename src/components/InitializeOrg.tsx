@@ -52,13 +52,13 @@ export const InitializeOrg = ({ onComplete }: { onComplete?: () => void }) => {
         .initializeOrganization(Array.from(orgId), mxeAddress, Array.from(clusterIdBytes))
         .accounts({
           employer: wallet.publicKey,
-          payrollMaster,
-          vaultAuthority,
-          usdcMint: USDC_MINT,
-          vault,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
+          payroll_master: payrollMaster,
+          vault_authority: vaultAuthority,
+          usdc_mint: USDC_MINT,
+          vault: vault,
+          token_program: TOKEN_PROGRAM_ID,
+          associated_token_program: ASSOCIATED_TOKEN_PROGRAM_ID,
+          system_program: SystemProgram.programId,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         })
         .rpc();
@@ -74,26 +74,30 @@ export const InitializeOrg = ({ onComplete }: { onComplete?: () => void }) => {
   };
 
   return (
-    <div className="font-sans">
-      <div className="text-[10px] uppercase tracking-[0.2em] text-cyan-600 dark:text-cyan-500 font-bold mb-2">Organization Config</div>
-      <h2 className="text-3xl lg:text-5xl font-black tracking-tighter leading-none mb-6 text-black dark:text-[#FAFAFA]">INITIALIZE<br/>NODES.</h2>
-      
-      <p className="text-gray-600 dark:text-[#a3a3a3] text-sm mb-8 leading-relaxed max-w-sm">
-        Configure your Arcium Execution Environment (MXE) to securely process encrypted payroll without revealing individual salaries.
-      </p>
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-100px)] p-4 font-sans w-full">
+      <div className="max-w-xl w-full">
+        <h2 className="text-[40px] md:text-[60px] font-black tracking-tighter leading-none mb-6 text-black dark:text-[#FAFAFA] text-center uppercase">
+          INIT<br/>NETWORK
+        </h2>
+        
+        <p className="text-gray-500 dark:text-[#737373] text-sm mb-12 text-center max-w-sm mx-auto font-mono">
+          Configure Arcium Execution Environment (MXE) to securely process encrypted payroll.
+        </p>
 
-      <div className="p-5 border border-gray-200 dark:border-[#262626] rounded-sm space-y-5 bg-white dark:bg-[#0A0A0A] max-w-md">
-        <div className="space-y-1">
-          <label className="text-[10px] uppercase text-gray-500 dark:text-[#737373] font-bold tracking-widest">Arcis Circuit URL</label>
-          <div className="text-xs font-mono truncate text-gray-600 dark:text-[#A3A3A3] bg-gray-50 dark:bg-[#171717] p-2 border border-gray-200 dark:border-[#262626]">.../uc?id=14NSvjxfQIZjch7r...</div>
+        <div className="border border-black dark:border-white p-8 bg-transparent space-y-6">
+          <div className="space-y-2 text-center">
+            <label className="text-[10px] uppercase font-bold tracking-widest text-black dark:text-white">Arcis Circuit URL</label>
+            <div className="text-xs font-mono truncate text-gray-500 bg-gray-100 dark:bg-gray-900 p-3">.../uc?export=download&id=14NSvjX...</div>
+          </div>
+          
+          <button
+            onClick={handleInit}
+            disabled={loading || !wallet}
+            className="w-full bg-black dark:bg-white text-white dark:text-black py-4 text-sm font-black uppercase tracking-widest hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
+          >
+            {loading ? 'INITIALIZING...' : 'INITIALIZE'}
+          </button>
         </div>
-        <button
-          onClick={handleInit}
-          disabled={loading || !wallet}
-          className="w-full bg-black dark:bg-white text-white dark:text-black py-3 text-sm font-black uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50"
-        >
-          {loading ? 'INITIALIZING...' : 'Initialize Organization'}
-        </button>
       </div>
     </div>
   );
