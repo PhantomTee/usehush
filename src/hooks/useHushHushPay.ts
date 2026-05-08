@@ -15,7 +15,7 @@ export function useHushHushPay() {
     const provider = new anchor.AnchorProvider(connection, wallet, {
       commitment: 'confirmed',
     });
-    return new anchor.Program(idl as unknown as anchor.Idl, PROGRAM_ID, provider);
+    return new anchor.Program(idl as unknown as anchor.Idl, provider);
   }, [connection, wallet]);
 
   return { program, wallet, connection };
