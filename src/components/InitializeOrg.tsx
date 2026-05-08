@@ -46,20 +46,21 @@ export const InitializeOrg = ({ onComplete }: { onComplete?: () => void }) => {
         program.programId
       );
 
-      const USDC_MINT = new PublicKey("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU");
+     const USDC_MINT = new PublicKey("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU");
 
       const tx = await program.methods
         .initializeOrganization(Array.from(orgId), mxeAddress, Array.from(clusterIdBytes))
         .accounts({
+          // Notice everything on the left side of the colon is camelCase!
           employer: wallet.publicKey,
-          payroll_master: payrollMaster,
-          vault_authority: vaultAuthority,
-          usdc_mint: USDC_MINT,
-          vault: vault,
-          token_program: TOKEN_PROGRAM_ID,
-          associated_token_program: ASSOCIATED_TOKEN_PROGRAM_ID,
-          system_program: SystemProgram.programId,
+          usdcMint: USDC_MINT,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+          
+          // Anchor's magic IDL handles payrollMaster, vault, and vaultAuthority 
+          // entirely on its own now!
         })
         .rpc();
 
