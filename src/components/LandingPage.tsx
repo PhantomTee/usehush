@@ -71,12 +71,11 @@ export function LandingPage() {
           </div>
           
           <div className="hidden md:flex flex-col items-start mt-2">
-            <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1">Scroll to section:</span>
             <nav className="flex space-x-6 text-[10px] font-bold tracking-widest uppercase">
-              <button onClick={() => scrollToSection('about-mxe')} className="hover:opacity-70 transition-opacity uppercase font-bold text-[10px] tracking-widest">About MXE</button>
-              <button onClick={() => scrollToSection('why-arcium')} className="hover:opacity-70 transition-opacity uppercase font-bold text-[10px] tracking-widest">Why Arcium</button>
+              <button type="button" onClick={() => scrollToSection('about-mxe')} className="hover:opacity-70 transition-opacity uppercase font-bold text-[10px] tracking-widest">About MXE</button>
+              <button type="button" onClick={() => scrollToSection('why-arcium')} className="hover:opacity-70 transition-opacity uppercase font-bold text-[10px] tracking-widest">Why Arcium</button>
               <a href="https://docs.arcium.com" target="_blank" rel="noreferrer" className="hover:opacity-70 transition-opacity uppercase font-bold text-[10px] tracking-widest">Arcium Docs</a>
-              <button onClick={() => scrollToSection('why-confidential')} className="hover:opacity-70 transition-opacity uppercase font-bold text-[10px] tracking-widest">Why Confidential</button>
+              <button type="button" onClick={() => scrollToSection('why-confidential')} className="hover:opacity-70 transition-opacity uppercase font-bold text-[10px] tracking-widest">Why Confidential</button>
             </nav>
           </div>
 

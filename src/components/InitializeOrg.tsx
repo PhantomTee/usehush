@@ -52,18 +52,25 @@ export const InitializeOrg = ({ onComplete }: { onComplete?: () => void }) => {
         .initializeOrganization(Array.from(orgId), mxeAddress, Array.from(clusterIdBytes))
         .accounts({
           employer: wallet.publicKey,
-          payrollMaster: payrollMaster,
-          vaultAuthority: vaultAuthority,
-          usdcMint: USDC_MINT,
+          payroll_master: payrollMaster,
+          vault_authority: vaultAuthority,
+          usdc_mint: USDC_MINT,
           vault: vault,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
+          token_program: TOKEN_PROGRAM_ID,
+          associated_token_program: ASSOCIATED_TOKEN_PROGRAM_ID,
+          system_program: SystemProgram.programId,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         })
         .rpc();
 
-      toast.success(`Organization Initialized! Tx: ${tx.slice(0, 8)}...`);
+      toast.success(
+        <div>
+          Organization Initialized!{' '}
+          <a href={`https://explorer.solana.com/tx/${tx}?cluster=devnet`} target="_blank" rel="noreferrer" className="underline">
+            View on Explorer
+          </a>
+        </div>
+      );
       if (onComplete) onComplete();
     } catch (e: any) {
       console.error(e);
