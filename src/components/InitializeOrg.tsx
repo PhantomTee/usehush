@@ -3,13 +3,17 @@ import { useHushHushPay } from '../hooks/useHushHushPay';
 import { PublicKey, SystemProgram } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { toast } from 'sonner';
 
 export const InitializeOrg = ({ onComplete }: { onComplete?: () => void }) => {
   const { program, wallet } = useHushHushPay();
   const [loading, setLoading] = useState(false);
 
   const handleInit = async () => {
-    if (!program || !wallet) return alert('Wallet not connected');
+    if (!program || !wallet) {
+      toast.error('Wallet not connected');
+      return;
+    }
     
     setLoading(true);
     try {
@@ -59,11 +63,11 @@ export const InitializeOrg = ({ onComplete }: { onComplete?: () => void }) => {
         })
         .rpc();
 
-      alert(`Organization Initialized! Tx: ${tx}`);
+      toast.success(`Organization Initialized! Tx: ${tx.slice(0, 8)}...`);
       if (onComplete) onComplete();
     } catch (e: any) {
       console.error(e);
-      alert('Error initializing org: ' + e.message);
+      toast.error('Error initializing org: ' + e.message);
     } finally {
       setLoading(false);
     }

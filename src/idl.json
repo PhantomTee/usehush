@@ -14,7 +14,7 @@
       "discriminator": [135, 198, 147, 247, 197, 106, 131, 254],
       "accounts": [
         {"name": "employer", "writable": true, "signer": true},
-        {"name": "sign_pda_account", "writable": true, "pda": {"seeds": [{"kind": "const", "value": [115, 105, 103, 110, 95, 112, 100, 97]}]}},
+        {"name": "sign_pda_account", "writable": true, "pda": {"seeds": [{"kind": "const", "type": {"array": ["u8", 8]}, "value": [115, 105, 103, 110, 95, 112, 100, 97]}]}},
         {"name": "mxe_account"},
         {"name": "mempool_account", "writable": true},
         {"name": "executing_pool", "writable": true},
@@ -33,12 +33,12 @@
         {"name": "payroll_batch", "writable": true}
       ],
       "args": [
-        {"name": "computation_offset", "type": "u64"},
-        {"name": "run_id", "type": "u64"},
-        {"name": "max_escrow_amount", "type": "u64"},
-        {"name": "tax_rate_bps", "type": "u64"},
-        {"name": "encrypted_salaries", "type": {"vec": {"defined": "EncryptedInput"}}},
-        {"name": "priority_fee", "type": "u64"}
+        {"name": "computationOffset", "type": "u64"},
+        {"name": "runId", "type": "u64"},
+        {"name": "maxEscrowAmount", "type": "u64"},
+        {"name": "taxRateBps", "type": "u64"},
+        {"name": "encryptedSalaries", "type": {"vec": {"defined": "EncryptedInput"}}},
+        {"name": "priorityFee", "type": "u64"}
       ]
     },
     {
@@ -46,19 +46,19 @@
       "discriminator": [21, 20, 253, 138, 250, 160, 119, 87],
       "accounts": [
         {"name": "employer", "writable": true, "signer": true},
-        {"name": "payroll_master", "writable": true, "pda": {"seeds": [{"kind": "const", "value": [112, 97, 121, 114, 111, 108, 108, 95, 109, 97, 115, 116, 101, 114]}, {"kind": "account", "path": "employer"}, {"kind": "arg", "path": "org_id"}]}},
-        {"name": "vault_authority", "pda": {"seeds": [{"kind": "const", "value": [118, 97, 117, 108, 116, 95, 97, 117, 116, 104]}, {"kind": "account", "path": "payroll_master"}]}},
+        {"name": "payroll_master", "writable": true, "pda": {"seeds": [{"kind": "const", "type": {"array": ["u8", 14]}, "value": [112, 97, 121, 114, 111, 108, 108, 95, 109, 97, 115, 116, 101, 114]}, {"kind": "account", "type": "publicKey", "path": "employer"}, {"kind": "arg", "type": {"array": ["u8", 16]}, "path": "orgId"}]}},
+        {"name": "vault_authority", "pda": {"seeds": [{"kind": "const", "type": {"array": ["u8", 10]}, "value": [118, 97, 117, 108, 116, 95, 97, 117, 116, 104]}, {"kind": "account", "type": "publicKey", "path": "payroll_master"}]}},
         {"name": "usdc_mint"},
-        {"name": "vault", "writable": true, "pda": {"seeds": [{"kind": "const", "value": [118, 97, 117, 108, 116]}, {"kind": "account", "path": "payroll_master"}]}},
+        {"name": "vault", "writable": true, "pda": {"seeds": [{"kind": "const", "type": {"array": ["u8", 5]}, "value": [118, 97, 117, 108, 116]}, {"kind": "account", "type": "publicKey", "path": "payroll_master"}]}},
         {"name": "token_program", "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"},
         {"name": "associated_token_program", "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"},
         {"name": "system_program", "address": "11111111111111111111111111111111"},
         {"name": "rent", "address": "SysvarRent111111111111111111111111111111111"}
       ],
       "args": [
-        {"name": "org_id", "type": {"array": ["u8", 16]}},
-        {"name": "mxe_address", "type": "publicKey"},
-        {"name": "cluster_id", "type": {"array": ["u8", 32]}}
+        {"name": "orgId", "type": {"array": ["u8", 16]}},
+        {"name": "mxeAddress", "type": "publicKey"},
+        {"name": "clusterId", "type": {"array": ["u8", 32]}}
       ]
     },
     {
@@ -67,13 +67,13 @@
       "accounts": [
         {"name": "employer", "writable": true, "signer": true, "relations": ["payroll_master"]},
         {"name": "payroll_master", "writable": true},
-        {"name": "employee_account", "writable": true, "pda": {"seeds": [{"kind": "const", "value": [101, 109, 112, 108, 111, 121, 101, 101]}, {"kind": "account", "path": "payroll_master"}, {"kind": "arg", "path": "employee_wallet"}]}},
+        {"name": "employee_account", "writable": true, "pda": {"seeds": [{"kind": "const", "type": {"array": ["u8", 8]}, "value": [101, 109, 112, 108, 111, 121, 101, 101]}, {"kind": "account", "type": "publicKey", "path": "payroll_master"}, {"kind": "arg", "type": "publicKey", "path": "employeeWallet"}]}},
         {"name": "system_program", "address": "11111111111111111111111111111111"}
       ],
       "args": [
-        {"name": "employee_wallet", "type": "publicKey"},
-        {"name": "arcis_pubkey", "type": {"array": ["u8", 32]}},
-        {"name": "display_name_hash", "type": {"array": ["u8", 32]}}
+        {"name": "employeeWallet", "type": "publicKey"},
+        {"name": "arcisPubkey", "type": {"array": ["u8", 32]}},
+        {"name": "displayNameHash", "type": {"array": ["u8", 32]}}
       ]
     }
   ],

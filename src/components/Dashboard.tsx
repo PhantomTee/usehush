@@ -4,6 +4,7 @@ import { PublicKey, SystemProgram } from '@solana/web3.js';
 import * as anchor from '@coral-xyz/anchor';
 import { ArciumEncryptionService } from '../services/arcium';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { toast } from 'sonner';
 
 export const Dashboard = () => {
   const { program, wallet } = useHushHushPay();
@@ -19,7 +20,10 @@ export const Dashboard = () => {
   };
 
   const handleOnboard = async () => {
-    if (!program || !wallet) return;
+    if (!program || !wallet) {
+      toast.error('Wallet not connected');
+      return;
+    }
     setLoading(true);
     addLog("[SYSTEM] Initiating onboard_employee...");
     try {
@@ -49,16 +53,21 @@ export const Dashboard = () => {
         .rpc();
 
       addLog(`[SUCCESS] Employee Onboarded: ${String(tx || '').slice(0, 8)}...`);
+      toast.success('Employee onboarded successfully!');
     } catch(e: any) {
       console.error(e);
       addLog(`[ERROR] ${e.message}`);
+      toast.error(e.message);
     } finally {
       setLoading(false);
     }
   };
 
   const handleProcessPayroll = async () => {
-    if (!program || !wallet) return;
+    if (!program || !wallet) {
+      toast.error('Wallet not connected');
+      return;
+    }
     setLoading(true);
     const arciumSvc = new ArciumEncryptionService();
     try {
@@ -146,9 +155,11 @@ export const Dashboard = () => {
         .rpc();
 
       addLog(`[SUCCESS] Payroll Processed! Tx: ${String(tx || '').slice(0, 8)}...`);
+      toast.success('Payroll processed successfully!');
     } catch(e: any) {
       console.error(e);
       addLog(`[ERROR] ${e.message}`);
+      toast.error(e.message);
     } finally {
       setLoading(false);
     }

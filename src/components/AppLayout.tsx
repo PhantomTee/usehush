@@ -5,6 +5,7 @@ import { Dashboard } from './Dashboard';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Navigate } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
+import { Sun, Moon } from 'lucide-react';
 
 export function AppLayout() {
   const { connected } = useWallet();
@@ -34,8 +35,8 @@ export function AppLayout() {
           </div>
         </div>
         <div className="flex items-center space-x-2 md:space-x-4">
-          <button onClick={toggleTheme} className="text-[10px] font-mono border border-black dark:border-white px-3 flex items-center justify-center h-8 rounded-full bg-transparent hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors uppercase tracking-widest">
-            {theme === 'dark' ? 'LIGHT' : 'DARK'}
+          <button onClick={toggleTheme} className="text-xl p-2 rounded-full hover:scale-110 transition-transform flex items-center justify-center">
+            {theme === 'dark' ? <Sun size={18} className="text-white" /> : <Moon size={18} className="text-black" />}
           </button>
           <div className="hidden sm:block text-[10px] font-mono border border-gray-300 dark:border-[#404040] px-3 py-1 rounded bg-gray-100 dark:bg-[#171717]">
             SESSION_KEY: ACTIVE

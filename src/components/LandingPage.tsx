@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { motion, useAnimation } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
 import { useTheme } from '../hooks/useTheme';
+import { Sun, Moon } from 'lucide-react';
 
 export function LandingPage() {
   const { connected } = useWallet();
@@ -77,8 +78,8 @@ export function LandingPage() {
           </nav>
 
           <div className="z-40 flex items-center gap-2">
-            <button onClick={toggleTheme} className="text-xl p-2 rounded-full hover:scale-105 transition-transform flex items-center justify-center">
-              {theme === 'dark' ? '☀️' : '🌙'}
+            <button onClick={toggleTheme} className="text-xl p-2 rounded-full hover:scale-110 transition-transform flex items-center justify-center">
+              {theme === 'dark' ? <Sun size={20} className="text-white" /> : <Moon size={20} className="text-black" />}
             </button>
             {connected ? (
               <Link 
@@ -96,7 +97,7 @@ export function LandingPage() {
         </header>
 
         {/* Main Center Area */}
-        <main className="flex-1 flex items-center justify-center px-4 -mt-24">
+        <main className="flex-1 flex items-center justify-center px-4 -mt-10 lg:-mt-16">
           <div 
             className="relative flex items-center justify-center cursor-crosshair select-none w-full"
             onMouseEnter={() => setIsHovered(true)}
@@ -118,7 +119,7 @@ export function LandingPage() {
                  animate={controlsMini}
                  initial={{ scale: 0, opacity: 0, zIndex: 0 }}
               >
-                <span className="text-[25vw] md:text-[20vw] text-white dark:text-black whitespace-nowrap drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] dark:drop-shadow-[0_10px_20px_rgba(255,255,255,0.8)] font-black">
+                <span className="text-[25vw] md:text-[20vw] text-white dark:text-black whitespace-nowrap drop-shadow-[5px_5px_0_rgba(0,0,0,1)] dark:drop-shadow-[5px_5px_0_rgba(255,255,255,1)] font-black">
                   Hush Pay
                 </span>
               </motion.div>
