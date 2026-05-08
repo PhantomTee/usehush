@@ -136,10 +136,19 @@ export function LandingPage() {
           <div className="max-w-md text-lg md:text-3xl leading-tight font-medium tracking-tight text-center md:text-left">
             A Confidential Payroll tool shaping the paths companies take next.
           </div>
-          <a href="https://docs.arcium.com" target="_blank" rel="noreferrer" className="text-[10px] sm:text-xs font-bold tracking-widest uppercase flex items-center gap-1 hover:opacity-70 transition-opacity">
-            Arcium Docs 
-            <span className="text-lg">↳</span>
-          </a>
+          <div className="flex items-center gap-6">
+            <button 
+              onClick={() => scrollToSection('about-mxe')}
+              className="text-[10px] sm:text-xs font-bold tracking-widest uppercase flex items-center gap-2 hover:opacity-70 transition-opacity"
+            >
+              Scroll to Explore 
+              <span className="text-lg">↓</span>
+            </button>
+            <a href="https://docs.arcium.com" target="_blank" rel="noreferrer" className="text-[10px] sm:text-xs font-bold tracking-widest uppercase flex items-center gap-1 hover:opacity-70 transition-opacity">
+              Arcium Docs 
+              <span className="text-lg">↗</span>
+            </a>
+          </div>
         </div>
       </div>
 

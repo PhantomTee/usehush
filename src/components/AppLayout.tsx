@@ -3,7 +3,7 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { InitializeOrg } from './InitializeOrg';
 import { Dashboard } from './Dashboard';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
 import { Sun, Moon } from 'lucide-react';
 
@@ -26,7 +26,7 @@ export function AppLayout() {
       {/* TOP HEADER */}
       <header className="h-16 shrink-0 border-b border-black dark:border-white flex items-center justify-between px-6 bg-transparent">
         <div className="flex items-center space-x-6">
-          <h1 className="text-xl font-black tracking-tighter uppercase italic">Hush Pay</h1>
+          <Link to="/" className="text-xl font-black tracking-tighter uppercase italic hover:opacity-70 transition-opacity">Hush Pay</Link>
           <div className="hidden md:flex items-center space-x-3 text-[10px] uppercase tracking-widest font-mono">
             <span>Devnet: 5NKPW...XFL</span>
             <span className="opacity-50">|</span>

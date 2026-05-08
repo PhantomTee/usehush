@@ -25,7 +25,7 @@ export const InitializeOrg = ({ onComplete }: { onComplete?: () => void }) => {
 
       const mxeAddress = anchor.web3.Keypair.generate().publicKey;
       const clusterIdBytes = new Uint8Array(32); 
-      clusterIdBytes[0] = 456; 
+      crypto.getRandomValues(clusterIdBytes);
 
       const [payrollMaster] = PublicKey.findProgramAddressSync(
         [
@@ -52,13 +52,13 @@ export const InitializeOrg = ({ onComplete }: { onComplete?: () => void }) => {
         .initializeOrganization(Array.from(orgId), mxeAddress, Array.from(clusterIdBytes))
         .accounts({
           employer: wallet.publicKey,
-          payroll_master: payrollMaster,
-          vault_authority: vaultAuthority,
-          usdc_mint: USDC_MINT,
+          payrollMaster: payrollMaster,
+          vaultAuthority: vaultAuthority,
+          usdcMint: USDC_MINT,
           vault: vault,
-          token_program: TOKEN_PROGRAM_ID,
-          associated_token_program: ASSOCIATED_TOKEN_PROGRAM_ID,
-          system_program: SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         })
         .rpc();
