@@ -4,7 +4,7 @@ import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import idl from '../idl.json';
 
-const PROGRAM_ID = new PublicKey('5NKPWTom5xmn9f45ryyyuid6KaQRnQFba7AyY7RCWXFL');
+const PROGRAM_ID = new PublicKey('3uJQvCdUrdXNtVvnL1jp7ZtiFDUJqUWNjBF7Z3pe3FD6');
 
 export function useHushHushPay() {
   const { connection } = useConnection();
