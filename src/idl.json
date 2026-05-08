@@ -37,7 +37,7 @@
         {"name": "run_id", "type": "u64"},
         {"name": "max_escrow_amount", "type": "u64"},
         {"name": "tax_rate_bps", "type": "u64"},
-        {"name": "encrypted_salaries", "type": {"vec": {"defined": {"name": "EncryptedInput"}}}},
+        {"name": "encrypted_salaries", "type": {"vec": {"defined": "EncryptedInput"}}},
         {"name": "priority_fee", "type": "u64"}
       ]
     },
@@ -57,7 +57,7 @@
       ],
       "args": [
         {"name": "org_id", "type": {"array": ["u8", 16]}},
-        {"name": "mxe_address", "type": "pubkey"},
+        {"name": "mxe_address", "type": "publicKey"},
         {"name": "cluster_id", "type": {"array": ["u8", 32]}}
       ]
     },
@@ -71,7 +71,7 @@
         {"name": "system_program", "address": "11111111111111111111111111111111"}
       ],
       "args": [
-        {"name": "employee_wallet", "type": "pubkey"},
+        {"name": "employee_wallet", "type": "publicKey"},
         {"name": "arcis_pubkey", "type": {"array": ["u8", 32]}},
         {"name": "display_name_hash", "type": {"array": ["u8", 32]}}
       ]
@@ -80,7 +80,7 @@
   "types": [
     {
       "name": "EncryptedInput",
-      "type": {"kind": "struct", "fields": [{"name": "employee_pda", "type": "pubkey"}, {"name": "ciphertext", "type": {"array": ["u8", 96]}}]}
+      "type": {"kind": "struct", "fields": [{"name": "employee_pda", "type": "publicKey"}, {"name": "ciphertext", "type": {"array": ["u8", 96]}}]}
     }
   ]
 }
