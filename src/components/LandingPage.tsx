@@ -70,12 +70,15 @@ export function LandingPage() {
             We are
           </div>
           
-          <nav className="hidden md:flex space-x-6 text-[10px] font-bold tracking-widest uppercase mt-2">
-            <button onClick={() => scrollToSection('about-mxe')} className="hover:opacity-70 transition-opacity uppercase font-bold text-[10px] tracking-widest">About MXE</button>
-            <button onClick={() => scrollToSection('privacy')} className="hover:opacity-70 transition-opacity uppercase font-bold text-[10px] tracking-widest">Privacy</button>
-            <a href="https://docs.arcium.com" target="_blank" rel="noreferrer" className="hover:opacity-70 transition-opacity uppercase font-bold text-[10px] tracking-widest">Arcium Docs</a>
-            <button onClick={() => scrollToSection('why-confidential')} className="hover:opacity-70 transition-opacity uppercase font-bold text-[10px] tracking-widest">Why Confidential</button>
-          </nav>
+          <div className="hidden md:flex flex-col items-start mt-2">
+            <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1">Scroll to section:</span>
+            <nav className="flex space-x-6 text-[10px] font-bold tracking-widest uppercase">
+              <button onClick={() => scrollToSection('about-mxe')} className="hover:opacity-70 transition-opacity uppercase font-bold text-[10px] tracking-widest">About MXE</button>
+              <button onClick={() => scrollToSection('why-arcium')} className="hover:opacity-70 transition-opacity uppercase font-bold text-[10px] tracking-widest">Why Arcium</button>
+              <a href="https://docs.arcium.com" target="_blank" rel="noreferrer" className="hover:opacity-70 transition-opacity uppercase font-bold text-[10px] tracking-widest">Arcium Docs</a>
+              <button onClick={() => scrollToSection('why-confidential')} className="hover:opacity-70 transition-opacity uppercase font-bold text-[10px] tracking-widest">Why Confidential</button>
+            </nav>
+          </div>
 
           <div className="z-40 flex items-center gap-2">
             <button onClick={toggleTheme} className="text-xl p-2 rounded-full hover:scale-110 transition-transform flex items-center justify-center">
@@ -136,19 +139,6 @@ export function LandingPage() {
           <div className="max-w-md text-lg md:text-3xl leading-tight font-medium tracking-tight text-center md:text-left">
             A Confidential Payroll tool shaping the paths companies take next.
           </div>
-          <div className="flex items-center gap-6">
-            <button 
-              onClick={() => scrollToSection('about-mxe')}
-              className="text-[10px] sm:text-xs font-bold tracking-widest uppercase flex items-center gap-2 hover:opacity-70 transition-opacity"
-            >
-              Scroll to Explore 
-              <span className="text-lg">↓</span>
-            </button>
-            <a href="https://docs.arcium.com" target="_blank" rel="noreferrer" className="text-[10px] sm:text-xs font-bold tracking-widest uppercase flex items-center gap-1 hover:opacity-70 transition-opacity">
-              Arcium Docs 
-              <span className="text-lg">↗</span>
-            </a>
-          </div>
         </div>
       </div>
 
@@ -162,24 +152,30 @@ export function LandingPage() {
               Multi-Party<br/>Execution.
             </div>
           </div>
-          <div className="flex items-end">
+          <div className="flex flex-col items-start justify-end gap-6">
             <p className="text-[#525252] dark:text-[#A3A3A3] text-lg md:text-2xl">
               Arcium’s MXE network empowers applications to securely run computations over encrypted data. By distributing trust across independent nodes, Hush Pay ensures payroll data remains completely confidential—even during execution.
             </p>
+            <button onClick={() => scrollToSection('why-arcium')} className="text-[10px] uppercase font-bold tracking-widest hover:opacity-70 transition-opacity flex items-center gap-2">
+              Next: Why Arcium <span className="text-sm">↓</span>
+            </button>
           </div>
         </section>
 
-        <section id="privacy" className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 pt-16 border-t border-gray-200 dark:border-[#171717]">
+        <section id="why-arcium" className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 pt-16 border-t border-gray-200 dark:border-[#171717]">
           <div>
-            <h2 className="text-[12px] font-bold uppercase tracking-widest text-[#737373] mb-4">Privacy</h2>
+            <h2 className="text-[12px] font-bold uppercase tracking-widest text-[#737373] mb-4">Why Arcium</h2>
             <div className="text-4xl md:text-6xl font-black tracking-tighter leading-none">
               Your Data,<br/>Your Key.
             </div>
           </div>
-          <div className="flex items-end">
+          <div className="flex flex-col items-start justify-end gap-6">
             <p className="text-[#525252] dark:text-[#A3A3A3] text-lg md:text-2xl">
               Salaries aren't just hidden; they are encrypted off-chain and kept entirely invisible on the blockchain. You have total sovereign control over who can reveal, compute, or modify the payroll ledger.
             </p>
+            <a href="https://docs.arcium.com" target="_blank" rel="noreferrer" className="text-[10px] uppercase font-bold tracking-widest hover:opacity-70 transition-opacity flex items-center gap-2">
+              Next: Arcium Docs <span className="text-sm">↗</span>
+            </a>
           </div>
         </section>
 
@@ -190,10 +186,13 @@ export function LandingPage() {
               Protecting<br/>Culture.
             </div>
           </div>
-          <div className="flex items-end">
+          <div className="flex flex-col items-start justify-end gap-6">
             <p className="text-[#525252] dark:text-[#A3A3A3] text-lg md:text-2xl">
               Open blockchains expose everything. But in business, salary transparency without consent breeds resentment and compromises leverage. Confidential payroll lets you use crypto rails with Web2 privacy guarantees.
             </p>
+            <button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="text-[10px] uppercase font-bold tracking-widest hover:opacity-70 transition-opacity flex items-center gap-2">
+              Back to Top <span className="text-sm">↑</span>
+            </button>
           </div>
         </section>
 
